@@ -311,7 +311,9 @@
 		linux,cma {
 			compatible = "shared-dma-pool";
 			reusable;
-			size = <0x14000000>;
+			/* size = <0x14000000>; */
+			size = <0x2000000>;		/* 32 MiB --> changed for lt220 board: 256MiB of total memory */
+			alignment = <0x1000>;	/* added aligment for lt220 board */
 			linux,cma-default;
 		};
 	};
