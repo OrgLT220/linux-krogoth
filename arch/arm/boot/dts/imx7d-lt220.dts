@@ -467,24 +467,6 @@
 };
 
 
-/* USB OTG1 - microUSB If dr_mode is not specified, defaults to otg */
-&usbotg1 {
-	vbus-supply = <&reg_usb_otg1_vbus>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_usbotg1>;
-	status = "okay";
-};
-
-
-/* USB OTG2 - as host If dr_mode is not specified, defaults to otg */
-&usbotg2 {
-	vbus-supply = <&reg_usb_otg2_vbus>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_usbotg2>;
-	dr_mode = "host";
-	status = "okay";
-};
-
 
 /* Ultra Secured Digital Host Controller - uSD Card */
 /* 3 different states */
@@ -553,7 +535,7 @@
 		/* not clear what is this */
 		pinctrl_hog_1: hoggrp-1 {
 			fsl,pins = <
-				MX7D_PAD_SD3_RESET_B__GPIO6_IO11	0x5d	/* SD_RESET_B - 47k PU */
+				/* MX7D_PAD_SD3_RESET_B__GPIO6_IO11	0x5d */	/* SD_RESET_B - 47k PU */
 				MX7D_PAD_ECSPI2_MISO__GPIO4_IO22	0x7d	/* INT PMIC - 100k PU */
 				MX7D_PAD_GPIO1_IO09__GPIO1_IO9		0x7d	/* INT ENET2 */
 			>;
@@ -795,6 +777,7 @@
 				MX7D_PAD_SD3_DATA6__SD3_DATA6		0x59
 				MX7D_PAD_SD3_DATA7__SD3_DATA7		0x59
 				MX7D_PAD_SD3_STROBE__SD3_STROBE     0x19
+				MX7D_PAD_SD3_RESET_B__GPIO6_IO11	0x5d	/* SD_RESET_B - 47k PU */
 			>;
 		};
 
@@ -811,6 +794,7 @@
 				MX7D_PAD_SD3_DATA6__SD3_DATA6		0x5a
 				MX7D_PAD_SD3_DATA7__SD3_DATA7		0x5a
 				MX7D_PAD_SD3_STROBE__SD3_STROBE     0x1a
+				MX7D_PAD_SD3_RESET_B__GPIO6_IO11	0x5d	/* SD_RESET_B - 47k PU */
 			>;
 		};
 
@@ -827,6 +811,7 @@
 				MX7D_PAD_SD3_DATA6__SD3_DATA6		0x5b
 				MX7D_PAD_SD3_DATA7__SD3_DATA7		0x5b
 				MX7D_PAD_SD3_STROBE__SD3_STROBE     0x1b
+				MX7D_PAD_SD3_RESET_B__GPIO6_IO11	0x5d	/* SD_RESET_B - 47k PU */
 			>;
 		};
 		
@@ -852,6 +837,13 @@
 				MX7D_PAD_EPDC_DATA06__QSPI_A_SS0_B	0x71
 			>;
 		};*/
+		
+		pinctrl_usbotg2_pwr_1: usbotg2-1 {
+			fsl,pins = <
+				MX7D_PAD_UART3_CTS_B__GPIO4_IO7		0x14
+			>;
+		};
+
 	};
 };
 
@@ -860,7 +852,7 @@
 
 &iomuxc_lpsr {
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_hog_2>;
+	pinctrl-0 = <&pinctrl_hog_2 &pinctrl_usbotg2_pwr_2>;
 
 	imx7d-lt220 {
 		/* not clear what is this */
@@ -873,17 +865,27 @@
 		};
 
 		/* usb otg1 pins */
+		/*
 		pinctrl_usbotg1: usbotg1grp {
 			fsl,pins = <
-				MX7D_PAD_GPIO1_IO04__USB_OTG1_OC	0x7d	/* usb 1 overcurrent */
-				MX7D_PAD_GPIO1_IO05__GPIO1_IO5		0x14	/* usb 1 power enable */
+				MX7D_PAD_GPIO1_IO04__USB_OTG1_OC	0x7d
+				MX7D_PAD_GPIO1_IO05__GPIO1_IO5		0x14
 			>;
 		};
+		*/
 
-		/* usb otg1 pins */
+		/* usb otg2 pins */
+		/*
 		pinctrl_usbotg2: usbotg2grp {
 			fsl,pins = <
-				MX7D_PAD_GPIO1_IO06__USB_OTG2_OC	0x7d	/* usb 2 overcurrent */
+				MX7D_PAD_GPIO1_IO06__USB_OTG2_OC	0x7d
+				MX7D_PAD_GPIO1_IO07__GPIO1_IO7		0x14
+			>;
+		};
+		*/
+		
+		pinctrl_usbotg2_pwr_2: usbotg2-2 {
+			fsl,pins = <
 				MX7D_PAD_GPIO1_IO07__GPIO1_IO7		0x14	/* usb 2 power enable */
 			>;
 		};
@@ -897,6 +899,41 @@
 	};
 };
 
+
+/* USB OTG1 - microUSB If dr_mode is not specified, defaults to otg */
+/*
+&usbotg1 {
+	vbus-supply = <&reg_usb_otg1_vbus>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usbotg1>;
+	status = "okay";
+};
+*/
+
+/* USB OTG2 - as host If dr_mode is not specified, defaults to otg */
+/*
+&usbotg2 {
+	vbus-supply = <&reg_usb_otg2_vbus>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usbotg2>;
+	dr_mode = "host";
+	status = "okay";
+};
+*/
+
+&usbotg1 {
+	vbus-supply = <&reg_usb_otg1_vbus>;
+	srp-disable;
+	hnp-disable;
+	adp-disable;
+	status = "okay";
+};
+
+&usbotg2 {
+	vbus-supply = <&reg_usb_otg2_vbus>;
+	dr_mode = "host";
+	status = "okay";
+};
 
 
 
